@@ -13,7 +13,6 @@ const fetchFunction = async () => {
 	let coordFetch = await fetch(`https://api-noopbots.lightboard.io/vexbot?height=${window.innerHeight}&width=${window.innerWidth}&count=100&connected=1`);
 	let coordResp = await coordFetch.json(); 
 	let coordData = await coordResp;
-	console.log(coordData);
 
 	let combinedData = coordData.vectors.map((vector, i) => {
 		return {
@@ -47,13 +46,13 @@ const drawCircle = () => {
 	ctx.arc(x, y, radius, 0, Math.PI * 2)
 	ctx.fill(); 
 	starter++; 
-	// if(starter === dataArray.length) {
-	// 	clearInterval(draw); 
-	// 	starter = 0; 
-	// }
+	if(starter === dataArray.length) {
+		clearInterval(draw); 
+		starter = 0; 
+	}
 }
 
 fetchFunction(); 
 if(dataArray){
-	let draw = setInterval(drawLine, 500); 
+	let draw = setInterval(drawLine, 250); 
 }
