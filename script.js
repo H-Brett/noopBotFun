@@ -10,14 +10,17 @@ const fetchFunction = async () => {
 	let colorResp = await colorFetch.json(); 
 	let colorData = await colorResp;
 
-	let coordFetch = await fetch(`https://api-noopbots.lightboard.io/vexbot?height=${window.innerHeight}&width=${window.innerWidth}&count=100`);
+	let coordFetch = await fetch(`https://api-noopbots.lightboard.io/vexbot?height=${window.innerHeight}&width=${window.innerWidth}&count=100&connected=1`);
 	let coordResp = await coordFetch.json(); 
 	let coordData = await coordResp;
+	console.log(coordData);
 
 	let combinedData = coordData.vectors.map((vector, i) => {
 		return {
-			x: vector.a.x,
-			y: vector.a.y,
+			aX: vector.a.x,
+			aY: vector.a.y,
+			bX: vector.b.x,
+			bY: vector.b.y,
 			radius: vector.speed,
 			color: colorData.colors[i].value, 
 		}
@@ -27,25 +30,30 @@ const fetchFunction = async () => {
 
 }	
 
-// const drawLine = (data, color) => {
-// 	let { a: pointA, b: pointB } = data; 
-// 	ctx.beginPath(); 
-// 	ctx.strokeStyle = color;
-// 	ctx.moveTo(pointA.x, pointA.y); 
-// 	ctx.lineTo(pointB.x , pointB.y);
-// 	ctx.stroke();
-// }
+const drawLine = () => {
+	let { aX, aY, bX, bY, color } = dataArray[starter]; 
+	ctx.beginPath(); 
+	ctx.strokeStyle = color;
+	ctx.moveTo(aX, aY); 
+	ctx.lineTo(bX, bY);
+	ctx.stroke();
+	starter++;
+}
 
 const drawCircle = () => {
-	let { x, y, color, radius } = dataArray[starter]; 
+	let { aX, aY, color, radius } = dataArray[starter]; 
 	ctx.beginPath(); 
 	ctx.fillStyle = color; 
 	ctx.arc(x, y, radius, 0, Math.PI * 2)
 	ctx.fill(); 
 	starter++; 
+	// if(starter === dataArray.length) {
+	// 	clearInterval(draw); 
+	// 	starter = 0; 
+	// }
 }
 
 fetchFunction(); 
 if(dataArray){
-	setInterval(drawCircle, 1000); 
+	let draw = setInterval(drawLine, 500); 
 }
